@@ -6,10 +6,9 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 /**
- * @Description: TODO
- * @author: melody_wongzq
- * @since: 2020/6/17
- * @see
+ * 基于 BIO 实现的服务端
+ * @author zqhuangc
+ * @see ServerSocket
  */
 public class BIOServer {
 
@@ -25,30 +24,30 @@ public class BIOServer {
         }
     }
 
-    public void listen() throws IOException {
+    public void listen(){
 
         while(true) {
-            //等待客户端连接，阻塞方法
-            Socket accept = server.accept();
-
-            InputStream inputStream = accept.getInputStream();
-
-            byte[] buf = new byte[1024];
-
-            int len = inputStream.read(buf);
-
-            inputStream.close();
-            //只要一直有数据写入，len就会一直大于0
-            if(len > 0){
-                String msg = new String(buf,0,len);
-                System.out.println("收到" + msg);
+            try {
+                //等待客户端连接，阻塞方法
+                Socket accept = server.accept();
+                InputStream inputStream = accept.getInputStream();
+                byte[] buf = new byte[1024];
+                int len = inputStream.read(buf);
+                inputStream.close();
+                //只要一直有数据写入，len就会一直大于0
+                if(len > 0){
+                    String msg = new String(buf,0,len);
+                    System.out.println("收到" + msg);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
 
         }
 
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
         new BIOServer(8080).listen();
     }
 }

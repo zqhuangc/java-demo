@@ -8,14 +8,13 @@ import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 
 /**
- * @Description: TODO
- * @author: melody_wongzq
- * @since: 2020/6/18
- * @see
+ * buffer api demo
+ * @author zqhuangc
+ * @see Buffer
  */
 public class BufferAPI {
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
         BufferAPI bufferAPI = new BufferAPI();
         String filePath = System.getProperty("user.dir")+ "\\io-all\\src\\main\\resources\\test.txt";
         // bufferAPI.fileParse(filePath);
@@ -30,7 +29,7 @@ public class BufferAPI {
 
         // ByteBuffer 创建
         byte[] buf = new byte[256];
-        ByteBuffer buffer = BufferManagement.allocateHeapBuffer(buf);
+        ByteBuffer buffer = BufferDemo.allocateHeapBuffer(buf);
         //ByteBuffer buffer = BufferManagement.allocateHeapBuffer(512);
 
         output("初始化", buffer);
@@ -46,13 +45,13 @@ public class BufferAPI {
         slice(buffer);
         output("调用slice()", buffer);
 
-        System.out.println("");
+        System.out.println();
         //判断有没有可读数据
         while (buffer.hasRemaining()) {
             byte b = buffer.get();
             System.out.print(((char)b));
         }
-        System.out.println("");
+        System.out.println();
 
         output("调用get()", buffer);
 
@@ -126,7 +125,7 @@ public class BufferAPI {
 
     public void readOnly(){
 
-        ByteBuffer buffer = BufferManagement.allocateHeapBuffer(10);
+        ByteBuffer buffer = BufferDemo.allocateHeapBuffer(10);
 
         // 缓冲区中的数据0-9
         for (int i=0; i<buffer.capacity(); ++i) {
@@ -156,7 +155,7 @@ public class BufferAPI {
     }
 
     public void writeFile() throws IOException {
-        byte message[] = { 83, 111, 109, 101, 32,
+        byte[] message = { 83, 111, 109, 101, 32,
                 98, 121, 116, 101, 115, 46 };
         FileOutputStream fout = new FileOutputStream( "e:\\test.txt" );
 
@@ -164,13 +163,13 @@ public class BufferAPI {
 
         ByteBuffer buffer = ByteBuffer.allocate( 1024 );
 
-        for (int i=0; i<message.length; ++i) {
-            buffer.put( message[i] );
+        for (byte b : message) {
+            buffer.put(b);
         }
 
         buffer.flip();
 
-        fc.write( buffer );
+        fc.write(buffer);
 
         fout.close();
     }

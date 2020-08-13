@@ -5,21 +5,21 @@ import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.*;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
 /**
- * @Description: TODO
- * @author: melody_wongzq
- * @since: 2020/6/18
- * @see
+ *
+ * 基于 NIO 的通讯服务端
+ * @author melody_wongzq
  */
 public class NIOServer {
 
     private final ServerSocketChannel server;
     private final Selector selector;
-    private final Charset charset = Charset.forName("UTF-8");
+    private final Charset charset = StandardCharsets.UTF_8;
 
     //用来记录在线人数，以及昵称
     private static HashSet<String> online_users = new HashSet<>();
@@ -55,12 +55,11 @@ public class NIOServer {
             Set<SelectionKey> selectionKeys = selector.selectedKeys();
             Iterator<SelectionKey> iterator = selectionKeys.iterator();
             while(iterator.hasNext()) {
-                SelectionKey key = (SelectionKey) iterator.next();
+                SelectionKey key = iterator.next();
                 iterator.remove();
                 //处理逻辑
                 process(key);
             }
-
         }
     }
 
@@ -109,7 +108,7 @@ public class NIOServer {
             }
             String[] messages = content.toString().split(USER_CONTENT_SEPARATOR);
             //注册用户
-            if(messages != null && messages.length == 1) {
+            if(messages.length == 1) {
                 String nickName = messages[0];
                 if (online_users.contains(messages[0])) {
                     client.write(charset.encode(USER_EXIST));

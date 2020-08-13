@@ -7,15 +7,16 @@ import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Iterator;
 import java.util.Scanner;
 import java.util.Set;
 
 /**
- * @Description: TODO
- * @author: melody_wongzq
- * @since: 2020/6/18
- * @see
+ * 基于 NIO 的通讯客户端
+ * @author zqhuangc
+ * @see Selector
+ * @see SocketChannel
  */
 public class NIOClient {
 
@@ -23,7 +24,7 @@ public class NIOClient {
     private SocketChannel client;
 
     private String nickName = "";
-    private Charset charset = Charset.forName("UTF-8");
+    private Charset charset = StandardCharsets.UTF_8;
     private static String USER_EXIST = "系统提示：该昵称已经存在，请换一个昵称";
     private static String USER_CONTENT_SEPARATOR = "#@#";
 
@@ -63,7 +64,7 @@ public class NIOClient {
                 }
                 scan.close();
             }catch(Exception e){
-
+                e.printStackTrace();
             }
         }
     }
@@ -71,10 +72,12 @@ public class NIOClient {
     private class Reader extends Thread{
         @Override
         public void run() {
-            try {
-                while(true){
+
+            while(true){
+                try {
                     int readyChannel = selector.select();
-                    if (readyChannel <= 0) continue;;
+
+                    if (readyChannel <= 0) continue;
                     Set<SelectionKey> selectionKeys = selector.selectedKeys();
                     Iterator<SelectionKey> keys = selectionKeys.iterator();
                     while(keys.hasNext()){
@@ -82,9 +85,9 @@ public class NIOClient {
                         keys.remove();
                         process(key);
                     }
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
-            } catch (IOException e) {
-                System.out.println(e);
             }
         }
 
@@ -93,7 +96,7 @@ public class NIOClient {
                 if(key.isReadable()){
                     SocketChannel client = (SocketChannel) key.channel();
                     ByteBuffer buf = ByteBuffer.allocate(256);
-                    StringBuffer message = new StringBuffer();
+                    StringBuilder message = new StringBuilder();
                     while (client.read(buf) > 0){
                         buf.flip();
                         message.append(charset.decode(buf));
@@ -107,7 +110,7 @@ public class NIOClient {
                     key.interestOps(SelectionKey.OP_READ);
                 }
             } catch (IOException e) {
-                System.out.println(e);
+                System.out.println(e.toString());
             }
         }
     }

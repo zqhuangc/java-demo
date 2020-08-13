@@ -9,10 +9,9 @@ import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
 
 /**
- * @Description: TODO
- * @author: melody_wongzq
- * @since: 2020/6/17
- * @see
+ * 基于 BIO 实现的客户端
+ * @author zqhuangc
+ * @see Socket
  */
 public class BIOClient {
 
@@ -21,6 +20,7 @@ public class BIOClient {
         BIOClient.syncSend();
         BIOClient.asyncSend();
     }
+
     private static void syncSend(){
         try {
             Socket client = new Socket("localhost", 8080);
@@ -45,28 +45,24 @@ public class BIOClient {
 
         for(int i = 0 ; i < count; i ++){
 
-            new Thread(){
-                @Override
-                public void run() {
-                    try{
-                        latch.await();
+            new Thread(()->{
+                try{
+                    latch.await();
 
-                        Socket client = new Socket("localhost", 8080);
+                    Socket client = new Socket("localhost", 8080);
 
-                        OutputStream os = client.getOutputStream();
+                    OutputStream os = client.getOutputStream();
 
-                        String name = UUID.randomUUID().toString();
+                    String name = UUID.randomUUID().toString();
 
-                        os.write((name + ":async:" + Thread.currentThread().getId()).getBytes());
-                        os.close();
-                        client.close();
+                    os.write((name + ":async:" + Thread.currentThread().getId()).getBytes());
+                    os.close();
+                    client.close();
 
-                    }catch(Exception e){
-
-                    }
+                }catch(Exception e){
+                    e.printStackTrace();
                 }
-
-            }.start();
+            }).start();
 
             latch.countDown();
         }

@@ -7,10 +7,9 @@ import java.nio.channels.CompletionHandler;
 import java.util.concurrent.*;
 
 /**
- * @Description: TODO
- * @author: melody_wongzq
- * @since: 2020/6/17
- * @see
+ * 基于 Aio 实现的客户端
+ * @author zqhuangc
+ * @see AsynchronousSocketChannel
  */
 public class AioClient {
 
@@ -29,9 +28,7 @@ public class AioClient {
                 try {
                     // 写（发送）
                     client.write(ByteBuffer.wrap(("test message:"+ System.currentTimeMillis()).getBytes())).get();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                } catch (ExecutionException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
@@ -69,7 +66,7 @@ public class AioClient {
         try {
             Thread.sleep(Integer.MAX_VALUE);
         } catch (InterruptedException e) {
-            System.out.println(e);;
+            System.out.println(e.toString());
         }
 
     }

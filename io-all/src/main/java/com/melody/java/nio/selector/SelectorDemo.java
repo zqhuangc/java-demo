@@ -5,12 +5,11 @@ import java.nio.channels.Selector;
 
 
 /**
- * @Description: TODO
- * @author: melody_wongzq
- * @since: 2020/6/16
- * @see
+ * SelectorD demo
+ * @author zqhuangc
+ * @see Selector
  */
-public class SelectorManagement {
+public class SelectorDemo {
 
     private final static Selector SELECTOR = null;
 
@@ -20,6 +19,14 @@ public class SelectorManagement {
             return Selector.open();
         }
         return SELECTOR;
+    }
+
+    public static void main(String[] args) {
+        try {
+            Selector selector = SelectorDemo.createSelector();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 }

@@ -4,12 +4,11 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 
 /**
- * @Description: TODO
- * @author: melody_wongzq
- * @since: 2020/6/16
- * @see
+ * ByteBuffer demo
+ * @author zqhuangc
+ * @see ByteBuffer
  */
-public class BufferManagement {
+public class BufferDemo {
 
     public static ByteBuffer allocateHeapBuffer(int capacity){
         return ByteBuffer.allocate(capacity);
@@ -52,7 +51,6 @@ public class BufferManagement {
                 // 调用clear()使position变为0,limit变为capacity的值，
                 // 为接下来写入数据到ByteBuffer中做准备
                 buffer.clear();
-                content = null;
             }
         }
     }

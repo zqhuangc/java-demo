@@ -1,7 +1,5 @@
 package com.melody.java.nio.channel;
 
-import com.melody.java.nio.selector.SelectorManagement;
-
 import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -13,12 +11,11 @@ import java.util.Iterator;
 import java.util.Set;
 
 /**
- * @Description: TODO
- * @author: melody_wongzq
- * @since: 2020/6/17
- * @see
+ * NIO 服务端 channel demo
+ * @author zqhuangc
+ * @see ServerSocketChannel
  */
-public class ChannelManagement {
+public class ChannelDemo {
 
     private final static ServerSocketChannel SERVER_SOCKET_CHANNEL = null;
 
@@ -55,10 +52,10 @@ public class ChannelManagement {
             // selectedKeys()返回一个SelectionKey的集合，
             // 其中每个SelectionKey代表了一个可以进行IO操作的channel。
             // 一个ServerSocketChannel可以进行IO操作意味着有新的TCP连接连入了
-            Set readyKeys = acceptSelector.selectedKeys();
-            Iterator i = readyKeys.iterator();
+            Set<SelectionKey> readyKeys = acceptSelector.selectedKeys();
+            Iterator<SelectionKey> i = readyKeys.iterator();
             while (i.hasNext()) {
-                SelectionKey sk = (SelectionKey) i.next();
+                SelectionKey sk = i.next();
                 // 需要将处理过的key从selectedKeys这个集合中删除
                 i.remove();
                 // 从SelectionKey得到对应的channel
@@ -81,7 +78,7 @@ public class ChannelManagement {
     }
 
     public static void main(String[] args) throws Exception{
-        ChannelManagement.acceptConnections(8080);
+        ChannelDemo.acceptConnections(8080);
         SocketChannel socketChannel = SocketChannel.open();
     }
 }

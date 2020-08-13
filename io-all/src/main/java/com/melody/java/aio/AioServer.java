@@ -8,10 +8,10 @@ import java.util.Map;
 import java.util.concurrent.*;
 
 /**
- * @Description: TODO
- * @author: melody_wongzq
- * @since: 2020/6/17
- * @see
+ * 基于 Aio 实现的服务端
+ * @author zqhuangc
+ * @see AsynchronousChannelGroup
+ * @see AsynchronousServerSocketChannel
  */
 public class AioServer {
 
@@ -37,7 +37,7 @@ public class AioServer {
 
             System.out.println("server started! listen at port:" + port);
 
-            final Map<String,Integer> count = new ConcurrentHashMap<String, Integer>();
+            final Map<String,Integer> count = new ConcurrentHashMap<>();
             count.put("count", 0);
 
             //开始等待客户端连接
@@ -61,13 +61,13 @@ public class AioServer {
                         byteBuffer.flip();
                         result.write(byteBuffer);
                     }  catch (Exception e) {
-                        System.out.println(e);
+                        System.out.println(e.toString());
                     } finally {
                         try {
                             result.close();
                             server.accept(null, this);
                         } catch (IOException e) {
-                            System.out.println(e);
+                            System.out.println(e.toString());
                         }
 
                     }
@@ -82,8 +82,8 @@ public class AioServer {
 
             try {
                 Thread.sleep(Integer.MAX_VALUE);
-            } catch (InterruptedException ex) {
-                System.out.println(ex);
+            } catch (InterruptedException e) {
+                System.out.println(e.toString());
             }
         } catch (IOException e) {
             e.printStackTrace();
