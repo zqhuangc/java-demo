@@ -9,9 +9,9 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.melody.spring</groupId>
-    <artifactId>crawler-all</artifactId>
+    <artifactId>upload-all</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>crawler-all</name>
+    <name>upload-all</name>
     <description>Demo project for Spring Boot</description>
 
     <properties>
@@ -40,6 +40,12 @@
             <groupId>commons-httpclient</groupId>
             <artifactId>commons-httpclient</artifactId>
             <version>3.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-fileupload</groupId>
+            <artifactId>commons-fileupload</artifactId>
+            <version>1.4</version>
         </dependency>
 
         <dependency>

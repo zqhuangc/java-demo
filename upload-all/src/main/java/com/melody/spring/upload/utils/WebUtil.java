@@ -10,10 +10,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * @Description: Web页面相关的操作
- * @author: zq
- * @since: 2020/7/8
- * @see
+ * Web页面相关的操作
+ * @author zqhuangc
  */
 public class WebUtil {
 
@@ -65,9 +63,9 @@ public class WebUtil {
             out(response,"text/html",returnStr.toString());
         } else if("1".equals(script)){
 
-            ObjectMapper obj = new ObjectMapper();
+            ObjectMapper objectMapper = new ObjectMapper();
             try{
-                obj.writeValue(response.getWriter(), json);
+               // JsonNode jsonNode = objectMapper.readTree(json);
             }catch(Exception e){
                 out(response,"text/javascript",json);
                 return;
@@ -100,7 +98,6 @@ public class WebUtil {
     /**
      * 获取domain
      * @param request
-     * @param response
      * @return
      */
     public static String getDomain(HttpServletRequest request){

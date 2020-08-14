@@ -9,10 +9,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * @Description: TODO
- * @author: zq
- * @since: 2020/7/9
- * @see
+ * TODO
+ * @author zqhuangc
  */
 public class BaseController {
 
@@ -44,7 +42,6 @@ public class BaseController {
     /**
      * 公共跳转方法
      * @param viewName
-     * @param modelMap
      * @return
      */
     protected ModelAndView jumpToView(String viewName) {

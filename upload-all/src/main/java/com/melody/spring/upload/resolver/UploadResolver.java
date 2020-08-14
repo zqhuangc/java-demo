@@ -6,10 +6,8 @@ import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import javax.servlet.http.HttpServletRequest;
 
 /**
- * @Description: 文件上传进度响应
- * @author: zq
- * @since: 2020/7/8
- * @see
+ * 文件上传进度响应
+ * @author zqhuangc
  */
 public class UploadResolver extends CommonsMultipartResolver {
 

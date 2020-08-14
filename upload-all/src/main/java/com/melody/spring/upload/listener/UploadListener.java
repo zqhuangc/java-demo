@@ -3,10 +3,8 @@ package com.melody.spring.upload.listener;
 import org.apache.tomcat.util.http.fileupload.ProgressListener;
 
 /**
- * @Description: 文件上传进度监听
- * @author: zq
- * @since: 2020/7/8
- * @see
+ * 文件上传进度监听
+ * @author: zqhuangc
  */
 public class UploadListener implements ProgressListener {
 
@@ -14,7 +12,6 @@ public class UploadListener implements ProgressListener {
     public Progress progress = new Progress();
 
     public UploadListener() {
-
     }
 
     public UploadListener(String progressId) {
@@ -40,11 +37,8 @@ public class UploadListener implements ProgressListener {
 
 
     //======  为了方便打包输出结果，所以在这里定义上传进度信息       ======
-
     /**
      * 上传进度信息
-     *
-     * @author Tom
      */
     class Progress {
         private String progressId = "";  //识别进度的ID

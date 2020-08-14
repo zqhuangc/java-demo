@@ -1,8 +1,14 @@
 package com.melody.spring.upload.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.melody.spring.upload.listener.UploadListener;
-import com.melody.spring.upload.utils.CustomConfig;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.multipart.MultipartFile;
@@ -15,31 +21,26 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.OutputStream;
 import java.io.RandomAccessFile;
-import java.util.logging.Logger;
-
+import java.util.Map;
 
 /**
- * @Description: TODO
- * @author: zq
- * @since: 2020/7/9
- * @see
+ *  TODO
+ * @author zqhuangc
  */
 @Controller
 @RequestMapping("/web")
 public class UploadController extends BaseController{
 
-    private static Logger LOG = Logger.getLogger(UploadController.class);
+    private static Logger LOG = LoggerFactory.getLogger(UploadController.class);
 
-    private final MultipartResolver uploadResolver;
+    private final MultipartResolver multipartResolver;
+
+    @Value("${system.upload.store}")
+    private String basePath;
 
     @Autowired
-    public UploadController(MultipartResolver uploadResolver) {
-        this.uploadResolver = uploadResolver;
-    }
-
-
-    private String getBasePath(){
-        return CustomConfig.getString("system.upload.store");
+    public UploadController(MultipartResolver multipartResolver) {
+        this.multipartResolver = multipartResolver;
     }
 
     /**
@@ -52,7 +53,7 @@ public class UploadController extends BaseController{
     public ModelAndView preview(HttpServletRequest request, HttpServletResponse response){
         try {
             String path = request.getRequestURI().replaceAll("/web/preview/", "");
-            RandomAccessFile raf = new RandomAccessFile(new File(getBasePath() + path), "r");
+            RandomAccessFile raf = new RandomAccessFile(new File(basePath + path), "r");
             OutputStream write = response.getOutputStream();
             int b;
             while(-1 != (b = raf.read())){
@@ -71,13 +72,14 @@ public class UploadController extends BaseController{
     @RequestMapping("/upload.json")
     public ModelAndView upload(HttpServletRequest request, HttpServletResponse response) {
 
-        JSONArray pathArrayObj = new JSONArray();
+        ObjectMapper objectMapper = new ObjectMapper();
+        ArrayNode arrayNode = objectMapper.createArrayNode();
         //创建一个通用的多部分解析器
         try {
-            if(uploadResolver.isMultipart(request)){  //判断 request 是否有文件上传,即多部分请求
+            if(multipartResolver.isMultipart(request)){  //判断 request 是否有文件上传,即多部分请求
 
                 MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest)request;  //转换成多部分request
-                for(Entry<String, MultipartFile> entry : multiRequest.getFileMap().entrySet()){
+                for(Map.Entry<String, MultipartFile> entry : multiRequest.getFileMap().entrySet()){
 
 //                	FileItem item = null;
 //                	item.delete();//用来删除临时文件的方法
@@ -87,33 +89,30 @@ public class UploadController extends BaseController{
 //                	ServletFileUpload upload = new ServletFileUpload();
 //                	List<FileItem> list = upload.parseRequest(request);
 
-
                     MultipartFile item = entry.getValue();  //取得上传文件
 
                     String type = entry.getValue().getContentType();	//判断上传文件的类型
 
-
-
-                    String progressId = request.getParameter("X-Progress-ID");
                     String myFileName = item.getOriginalFilename();  //取得当前上传文件的文件名称
                     String ext = ".file";//myFileName.substring(myFileName.lastIndexOf("."));
+                    String progressId = request.getParameter("X-Progress-ID");
                     String fileName = progressId + "_" + System.currentTimeMillis() + ext;
-                    JSONObject fileObj = new JSONObject();
-                    fileObj.put("progressId", progressId);	//文件ID
+
+                    ObjectNode objectNode = objectMapper.createObjectNode();
+                    objectNode.put("progressId", progressId);	//文件ID
                     String uploadDir = "/uploads";
-                    String savePath = getBasePath() + uploadDir;//入库的路径
+                    String savePath = basePath + uploadDir;//入库的路径
                     if(myFileName.trim() !=""){  //如果名称不为"",说明该文件存在，否则说明该文件不存在
                         File localFile = new File(savePath + "/" + fileName);
                         item.transferTo(localFile);
                     }
-                    fileObj.put("size", item.getSize());	//文件大小
-                    fileObj.put("name", myFileName);	//文件真实名
-                    fileObj.put("path", uploadDir + "/" + fileName);	//文件路径
-                    pathArrayObj.add(fileObj);
-
+                    objectNode.put("size", item.getSize());	//文件大小
+                    objectNode.put("name", myFileName);	//文件
+                    objectNode.put("path", uploadDir + "/" + fileName);	//文件路径
+                    arrayNode.add(objectNode);
                 }
 
-                return super.callBackForJsonp(request, response, JSON.toJSONString(pathArrayObj));
+                return super.callBackForJsonp(request, response, objectMapper.writeValueAsString(arrayNode));
             }else{
                 LOG.error("上传文件出错！");
                 return null;
@@ -132,7 +131,7 @@ public class UploadController extends BaseController{
      * @return
      */
     @RequestMapping(value="/upload/progress.json")
-    public ModelAndView progress(HttpServletRequest request, HttpServletResponse response){
+    public ModelAndView progress(HttpServletRequest request, HttpServletResponse response) throws JsonProcessingException {
 
         String progressId = request.getParameter("X-Progress-ID");
 
@@ -140,7 +139,7 @@ public class UploadController extends BaseController{
         if (listenter == null) {
             return super.callBackForJsonp(request, response, "{}");
         }
-        return super.callBackForJsonp(request, response, JSON.toJSONString(listenter.progress));
+        return super.callBackForJsonp(request, response, new ObjectMapper().writeValueAsString(listenter.progress));
 
     }
 

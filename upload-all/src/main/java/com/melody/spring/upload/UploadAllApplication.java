@@ -8,15 +8,15 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.web.multipart.MultipartResolver;
 
 @SpringBootApplication
-public class CrawlerAllApplication {
+public class UploadAllApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(CrawlerAllApplication.class, args);
+        SpringApplication.run(UploadAllApplication.class, args);
     }
 
     @Bean
     @Primary
-    public MultipartResolver uploadMultipartResolver(){
+    public MultipartResolver multipartResolver(){
         UploadResolver uploadResolver = new UploadResolver();
         uploadResolver.setDefaultEncoding("UTF-8");
         uploadResolver.setMaxUploadSize(99199023255552L);
