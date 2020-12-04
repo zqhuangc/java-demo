@@ -1,4 +1,4 @@
-package com.melody.base.newfeature.java8;
+package com.melody.base.newfeature.java8.function;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -21,21 +21,23 @@ public class FunctionDemo {
 	private static void demoFlatMap() {
 		//.flatMapToInt(value -> { })     // 降维
 		Arrays.asList("1,2","3,4,5")
-		        // 一维变二维
-		        .stream()	        
-		        .map(value -> value.split(","))     
-		        .flatMap(array -> Arrays.stream(array))
-		         // 二维降到一维
+		        .stream()
+				// 一维变二维
+		        .map(value -> value.split(","))
+				// 二维降到一维
+				.flatMap(Arrays::stream)
+				//.flatMap(array -> Arrays.stream(array))
 		        .forEach(System.out::println);
 		
 		System.out.println(Arrays.asList("1,2","3,4,5")
-        // 一维变二维
-        .stream()	        
-        .map(value -> value.split(","))     
-        .flatMap(array -> Arrays.stream(array))
-         // 二维降到一维
-        .map(Integer::valueOf)
-        .reduce(0,Integer::sum));
+				.stream()
+				// 一维变二维
+				.map(value -> value.split(","))
+				// 二维降到一维
+				.flatMap(array -> Arrays.stream(array))
+				.map(Integer::valueOf)
+				.reduce(0, Integer::sum)
+		);
 	}
 	
 	private static List<Integer> oneToTen() {

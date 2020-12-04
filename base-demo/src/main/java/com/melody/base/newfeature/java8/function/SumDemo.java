@@ -1,4 +1,4 @@
-package com.melody.base.newfeature.java8;
+package com.melody.base.newfeature.java8.function;
 
 import java.util.ArrayList;
 import java.util.List;
